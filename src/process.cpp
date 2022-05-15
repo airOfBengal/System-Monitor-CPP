@@ -6,10 +6,14 @@
 
 #include "process.h"
 
+#define Hertz sysconf(_SC_CLK_TCK)
+
 using std::string;
 using std::to_string;
 using std::vector;
 using std::stol;
+
+Process::Process(int pid) : pid_(pid) {}
 
 // Return this process's ID
 int Process::Pid() { 
@@ -21,9 +25,28 @@ float Process::CpuUtilization() const {
   return this->cpuUtilization_; 
 }
 
+void Process::CpuUtilization(vector<long int>& times) {
+  // calculate processor utilization
+  long uptime = LinuxParser::UpTime();
+  long utime = times[0];
+  long stime = times[1];
+  long cutime = times[2];
+  long cstime = times[3];
+  long starttime = times[4];
+  
+  long totalTime = utime + stime + cutime + cstime;
+  long seconds = (long)(uptime - (starttime / (float)Hertz));
+  
+  this->cpuUtilization_ = 100 * ((totalTime / (float)Hertz) / seconds);
+}
+
 // Returns the command that generated this process
 string Process::Command() { 
   return this->command_; 
+}
+
+void Process::Command(string command){
+  this->command_ = command;
 }
 
 // Returns this process's memory utilization
@@ -31,14 +54,26 @@ string Process::Ram() const {
   return this->ram_; 
 }
 
+void Process::Ram(string ram){
+  this->ram_ = ram;
+}
+
 // Returns the user (name) that generated this process
 string Process::User() { 
   return this->user_; 
 }
 
+void Process::User(string user){
+  this->user_ = user;
+}
+
 // Returns the age of this process (in seconds)
 long int Process::UpTime() { 
-  return this->upTime_; 
+  return (this->upTime_ / Hertz); 
+}
+
+void Process::UpTime(long int upTime){
+  this->upTime_ = upTime;
 }
 
 // Overloads the "less than" comparison operator for Process objects

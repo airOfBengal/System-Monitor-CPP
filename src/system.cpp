@@ -3,6 +3,7 @@
 #include <set>
 #include <string>
 #include <vector>
+#include <algorithm>
 
 #include "process.h"
 #include "processor.h"
@@ -12,18 +13,35 @@ using std::set;
 using std::size_t;
 using std::string;
 using std::vector;
-/*You need to complete the mentioned TODOs in order to satisfy the rubric criteria "The student will be able to extract and display basic data about the system."
-
-You need to properly format the uptime. Refer to the comments mentioned in format. cpp for formatting the uptime.*/
 
 // Returns the system's CPU
 Processor& System::Cpu() { return cpu_; }
 
+bool Compare(Process a, Process b){
+  if(a < b){
+    return true;
+  }
+  return false;
+}
+
 // Returns a container composed of the system's processes
 vector<Process>& System::Processes() { 
-  // todo
+  processes_.clear();
   vector<int> pIds = LinuxParser::Pids();
+  for(int pid : pIds){
+    Process process(pid);
+    process.User(LinuxParser::User(pid));
+    process.Command(LinuxParser::Command(pid));
+    process.Ram(LinuxParser::Ram(pid));
+    vector<long int> cpuTimes = LinuxParser::ProcessCpuTimes(pid);
+    process.UpTime(cpuTimes[cpuTimes.size()-1]);
+    process.CpuUtilization(cpuTimes);
+    
+    processes_.emplace_back(process);
+  }
   
+  sort(processes_.begin(), processes_.end(), Compare);
+  reverse(processes_.begin(), processes_.end());
   return processes_; 
 }
 

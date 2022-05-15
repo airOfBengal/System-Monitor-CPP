@@ -10,8 +10,8 @@ using std::stof;
 using std::string;
 using std::to_string;
 using std::vector;
+using std::stol;
 
-// DONE: An example of how to read data from the filesystem
 string LinuxParser::OperatingSystem() {
   string line;
   string key;
@@ -34,7 +34,6 @@ string LinuxParser::OperatingSystem() {
   return value;
 }
 
-// DONE: An example of how to read data from the filesystem
 string LinuxParser::Kernel() {
   string os, kernel, version;
   string line;
@@ -47,7 +46,7 @@ string LinuxParser::Kernel() {
   return kernel;
 }
 
-// BONUS: Update this to use std::filesystem
+
 vector<int> LinuxParser::Pids() {
   vector<int> pids;
   DIR* directory = opendir(kProcDirectory.c_str());
@@ -102,20 +101,8 @@ long LinuxParser::UpTime() {
   return upTime; 
 }
 
-// TODO: Read and return the number of jiffies for the system
-long LinuxParser::Jiffies() { return 0; }
 
-// TODO: Read and return the number of active jiffies for a PID
-// REMOVE: [[maybe_unused]] once you define the function
-long LinuxParser::ActiveJiffies(int pid[[maybe_unused]]) { return 0; }
-
-// TODO: Read and return the number of active jiffies for the system
-long LinuxParser::ActiveJiffies() { return 0; }
-
-// TODO: Read and return the number of idle jiffies for the system
-long LinuxParser::IdleJiffies() { return 0; }
-
-// TODO: Read and return CPU utilization
+// Reads and return CPU utilization
 vector<string> LinuxParser::CpuUtilization() { 
   vector<string> cpuTimes;
   string line, cpu;
@@ -191,7 +178,7 @@ string LinuxParser::Ram(int pid) {
       std::istringstream linestream(line);
       linestream >> key >> value;
 	  if(key == "VmSize:"){
-      	return to_string((long)(stof(value) * 0.001));
+      	return to_string((long)(stol(value) * 0.001));
       }
     }
   }
@@ -235,6 +222,21 @@ string LinuxParser::User(int pid) {
   return key;
 }
 
-// TODO: Read and return the uptime of a process
-// REMOVE: [[maybe_unused]] once you define the function
-long LinuxParser::UpTime(int pid[[maybe_unused]]) { return 0; }
+
+// #14: utime, #15: stime, #16: cutime, #17: cstime, #22: starttime.
+vector<long int> LinuxParser::ProcessCpuTimes(int pid){
+  vector<long int> cpuTimes; 
+  string line, value;
+  std::ifstream stream(kProcDirectory + to_string(pid) + kStatFilename);
+  if(stream.is_open()){
+    std::getline(stream, line);
+    std::istringstream linestream(line);
+    for(int i=1;i<=22;i++){
+       linestream >> value;
+       if(i == 14 || i == 15 || i == 16 || i == 17 || i == 22) {
+         cpuTimes.emplace_back(stol(value));
+       }
+    }
+  }
+  return cpuTimes;
+}

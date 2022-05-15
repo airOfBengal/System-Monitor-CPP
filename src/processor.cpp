@@ -6,7 +6,6 @@ using std::stof;
 using std::string;
 using std::vector;
 
-// TODO: Return the aggregate CPU utilization
 float Processor::Utilization() { 
   float cpuUtilization = 0.0;
   
