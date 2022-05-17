@@ -37,7 +37,7 @@ void Process::CpuUtilization(vector<long int>& times) {
   long totalTime = utime + stime + cutime + cstime;
   long seconds = (long)(uptime - (starttime / (float)Hertz));
   
-  this->cpuUtilization_ = 100 * ((totalTime / (float)Hertz) / seconds);
+  this->cpuUtilization_ = ((totalTime / (float)Hertz) / seconds);
 }
 
 // Returns the command that generated this process
