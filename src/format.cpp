@@ -10,5 +10,14 @@ string Format::ElapsedTime(long seconds) {
   long mm = (seconds % 3600) / 60;
   long ss = (seconds % 3600) % 60;
   
-  return to_string(hh) + ":" + to_string(mm) + ":" + to_string(ss); 
+  string sec = to_string(ss);
+  sec.insert(0, 2 - sec.length(), '0');
+  
+  string mins = to_string(mm);
+  mins.insert(0, 2 - mins.length(), '0');
+  
+  string hrs = to_string(hh);
+  hrs.insert(0, 2 - hrs.length(), '0');
+  
+  return hrs + ":" + mins + ":" + sec; 
 }
