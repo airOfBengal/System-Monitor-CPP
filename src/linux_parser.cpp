@@ -178,7 +178,11 @@ string LinuxParser::Ram(int pid) {
       std::istringstream linestream(line);
       linestream >> key >> value;
 	  if(key == "VmSize:"){
-      	return to_string((long)(stol(value) * 0.001));
+        try{
+      	  return to_string((long)(stol(value) * 0.001));
+        }catch(...){
+          return "0";
+        }
       }
     }
   }
@@ -234,7 +238,11 @@ vector<long int> LinuxParser::ProcessCpuTimes(int pid){
     for(int i=1;i<=22;i++){
        linestream >> value;
        if(i == 14 || i == 15 || i == 16 || i == 17 || i == 22) {
-         cpuTimes.emplace_back(stol(value));
+         try{
+           cpuTimes.emplace_back(stol(value));
+         }catch(...){
+           cpuTimes.emplace_back(0);
+         }
        }
     }
   }
