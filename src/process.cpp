@@ -69,7 +69,7 @@ void Process::User(string user){
 
 // Returns the age of this process (in seconds)
 long int Process::UpTime() { 
-  return (this->upTime_ / Hertz); 
+  return LinuxParser::UpTime() - (this->upTime_ / Hertz); 
 }
 
 void Process::UpTime(long int upTime){
