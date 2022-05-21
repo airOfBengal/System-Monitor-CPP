@@ -81,7 +81,16 @@ bool Process::operator<(Process const& a) const {
   if(cpuUtilization_ < a.CpuUtilization()){
     return true;
   }else if(cpuUtilization_ == a.CpuUtilization()){
-  	if(stol(ram_) <= stol(a.Ram())){
+    long ram1 = 0, ram2 = 0;
+    try{
+      ram1 = stol(ram_);
+    }catch(...) {}
+    
+    try{
+      ram2 = stol(a.Ram());
+    }catch(...) {}
+    
+  	if(ram1 <= ram2){
       return true;
     }
   }

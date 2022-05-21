@@ -76,9 +76,17 @@ float LinuxParser::MemoryUtilization() {
       std::istringstream linestream(line);
       linestream >> key >> value;
 	  if(key == "MemTotal:"){
-      	memTotal = stof(value);
+        try{
+      	  memTotal = stof(value);
+        }catch(...){
+          memTotal = 1.0;
+        }
       }else if(key == "MemFree:"){
-      	memFree = stof(value);
+        try{
+      	  memFree = stof(value);
+        }catch(...){
+          memFree = 0.0;
+        }
         break;
       }
     }
@@ -96,7 +104,11 @@ long LinuxParser::UpTime() {
     std::getline(stream, line); 
     std::istringstream linestream(line);
     linestream >> upTimeString;
-    upTime = std::stol(upTimeString);
+    try{
+      upTime = std::stol(upTimeString);
+    }catch(...){
+      upTime = 0;
+    }
   }
   return upTime; 
 }
@@ -132,7 +144,11 @@ int LinuxParser::TotalProcesses() {
       std::istringstream linestream(line);
       linestream >> key >> value;
 	  if(key == "processes"){
-      	totalProcesses = std::stoi(value);
+        try{
+      	  totalProcesses = std::stoi(value);
+        }catch(...){
+          totalProcesses = 0;
+        }
         return totalProcesses;
       }
     }
@@ -150,7 +166,11 @@ int LinuxParser::RunningProcesses() {
       std::istringstream linestream(line);
       linestream >> key >> value;
 	  if(key == "procs_running"){
-      	runningProcesses = std::stoi(value);
+        try{
+      	  runningProcesses = std::stoi(value);
+        }catch(...){
+          runningProcesses = 0;
+        }
         return runningProcesses;
       }
     }
