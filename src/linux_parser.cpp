@@ -79,13 +79,13 @@ float LinuxParser::MemoryUtilization() {
         try{
       	  memTotal = stof(value);
         }catch(...){
-          memTotal = 1.0;
+          memTotal = 1.0f;
         }
       }else if(key == "MemFree:"){
         try{
       	  memFree = stof(value);
         }catch(...){
-          memFree = 0.0;
+          memFree = 0.0f;
         }
         break;
       }
@@ -201,7 +201,7 @@ string LinuxParser::Ram(int pid) {
         try{
       	  return to_string((long)(stol(value) * 0.001));
         }catch(...){
-          return "0";
+          return string("0");
         }
       }
     }
